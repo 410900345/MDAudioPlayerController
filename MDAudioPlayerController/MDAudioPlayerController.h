@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
+#import <MediaPlayer/MediaPlayer.h>
 #import <QuartzCore/QuartzCore.h>
 #import "MDAudioFile.h"
 
@@ -39,7 +40,7 @@
 	UILabel				*artistLabel;
 	UILabel				*albumLabel;
 	UILabel				*indexLabel;
-	UISlider			*volumeSlider;
+	MPVolumeView		*volumeSlider;
 	UISlider			*progressSlider;
 	
 	UITableView			*songTableView;
@@ -65,6 +66,9 @@
 
 @property (nonatomic, strong) CAGradientLayer *gradientLayer;
 
+@property (nonatomic, strong) UIImage *noArtworkImage;
+@property (nonatomic, strong) UIImage *noArtworkDefaultImage;
+
 @property (nonatomic, strong) UIButton *playButton;
 @property (nonatomic, strong) UIButton *pauseButton;
 @property (nonatomic, strong) UIButton *nextButton;
@@ -80,7 +84,7 @@
 @property (nonatomic, strong) UILabel *artistLabel;
 @property (nonatomic, strong) UILabel *albumLabel;
 
-@property (nonatomic, strong) UISlider *volumeSlider;
+@property (nonatomic, strong) MPVolumeView *volumeSlider;
 @property (nonatomic, strong) UISlider *progressSlider;
 
 @property (nonatomic, strong) UITableView *songTableView;
@@ -97,6 +101,7 @@
 @property (nonatomic, assign) BOOL repeatOne;
 @property (nonatomic, assign) BOOL shuffle;
 
+- (MDAudioPlayerController *)initWithSoundFiles:(NSMutableArray *)songs atPath:(NSString *)path andSelectedIndex:(int)index customNoArtworkImage:(UIImage *)noArtworkImage;
 - (MDAudioPlayerController *)initWithSoundFiles:(NSMutableArray *)songs atPath:(NSString *)path andSelectedIndex:(int)index;
 - (void)dismissAudioPlayer;
 - (void)showSongFiles;
@@ -108,7 +113,6 @@
 - (void)play;
 - (void)previous;
 - (void)next;
-- (void)volumeSliderMoved:(UISlider*)sender;
 - (IBAction)progressSliderMoved:(UISlider*)sender;
 
 - (void)toggleShuffle;

@@ -8,7 +8,7 @@
 
 #import "MDAudioPlayerTableViewCell.h"
 #define IS_OS_7_OR_LATER    ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
-
+#define IS_OS_8_OR_LATER    ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0)
 
 @interface MDTableViewCellView : UIView
 @end
@@ -17,7 +17,10 @@
 
 - (void)drawRect:(CGRect)r
 {
-    if (IS_OS_7_OR_LATER) {
+    if (IS_OS_8_OR_LATER) {
+        [(MDAudioPlayerTableViewCell *)[self superview] drawContentView:r];
+    }
+    else if (IS_OS_7_OR_LATER) {
         [(MDAudioPlayerTableViewCell *)[self superview].superview drawContentView:r];
     }
     else {
@@ -60,7 +63,7 @@ static UIFont *textFont = nil;
 
 - (void)setTitle:(NSString *)s
 {
-    title = s;
+    title = [s stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 	[self setNeedsDisplay]; 
 }
 
@@ -113,9 +116,9 @@ static UIFont *textFont = nil;
 	
 	[textColor set];
 	
-	[title drawInRect:CGRectMake(75, 12, 185, 15) withFont:textFont lineBreakMode:NSLineBreakByTruncatingTail];
+	[title drawInRect:CGRectMake(75, 12, 180, 15) withFont:textFont lineBreakMode:NSLineBreakByTruncatingTail];
 	[number drawInRect:CGRectMake(5, 12, 35, 15) withFont:textFont lineBreakMode:NSLineBreakByTruncatingTail];
-	[duration drawInRect:CGRectMake(270, 12, 45, 15) withFont:textFont lineBreakMode:NSLineBreakByTruncatingTail alignment:NSTextAlignmentRight];
+	[duration drawInRect:CGRectMake(255, 12, 55, 15) withFont:textFont lineBreakMode:NSLineBreakByTruncatingTail alignment:NSTextAlignmentRight];
 	
 	[dividerColor set];
 	

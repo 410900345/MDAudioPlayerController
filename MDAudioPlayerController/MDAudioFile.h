@@ -14,6 +14,7 @@
 {
 	NSURL			*filePath;
 	NSDictionary	*fileInfoDict;
+    UIImage *coverImage;
 }
 
 @property (nonatomic, retain) NSURL *filePath;

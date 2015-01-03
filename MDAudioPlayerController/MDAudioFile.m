@@ -7,7 +7,7 @@
 //
 
 #import "MDAudioFile.h"
-
+#import <AVFoundation/AVFoundation.h>
 
 @implementation MDAudioFile
 
@@ -20,13 +20,38 @@
 	{
 		self.filePath = path;
 		self.fileInfoDict = [self songID3Tags];
+        
+        [self getArtwork];
 	}
 	
 	return self;
 }
 
+- (void)getArtwork
+{
+    AVAsset *assest;
+    
+    NSURL *fileURL = filePath;
+    assest = [AVURLAsset URLAssetWithURL:fileURL    options:nil];
+    for (NSString *format in [assest availableMetadataFormats]) {
+        for (AVMetadataItem *item in [assest metadataForFormat:format]) {
+            if ([[item commonKey] isEqualToString:@"artwork"]) {
+                UIImage *img = nil;
+                if ([item.keySpace isEqualToString:AVMetadataKeySpaceiTunes]) {
+                    img = [UIImage imageWithData:[item.value copyWithZone:nil]];
+                }
+                else {
+                    NSData *data = [(NSDictionary *)[item value] objectForKey:@"data"];
+                    img = [UIImage imageWithData:data]  ;
+                }
+                coverImage = img;
+            }
+        }
+    }
+}
+
 - (NSDictionary *)songID3Tags
-{	
+{
 	AudioFileID fileID = nil;
 	OSStatus error = noErr;
 	
@@ -128,19 +153,22 @@
 - (float)duration
 {
 	if ([fileInfoDict objectForKey:[NSString stringWithUTF8String:kAFInfoDictionary_ApproximateDurationInSeconds]])
-		return [[fileInfoDict objectForKey:[NSString stringWithUTF8String:kAFInfoDictionary_ApproximateDurationInSeconds]] floatValue];
+		return [[[fileInfoDict objectForKey:[NSString stringWithUTF8String:kAFInfoDictionary_ApproximateDurationInSeconds]] stringByReplacingOccurrencesOfString:@"," withString:@""] floatValue];
 	else
 		return 0;
 }
 
 - (NSString *)durationInMinutes
-{	
+{
 	return [NSString stringWithFormat:@"%d:%02d", (int)[self duration] / 60, (int)[self duration] % 60, nil];
 }
 
 - (UIImage *)coverImage
 {
-	return [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerNoArtwork" ofType:@"png"]];
+    if (coverImage) {
+        return coverImage;
+    }
+	return nil;
 }
 
 @end
